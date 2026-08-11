@@ -127,33 +127,31 @@ La app guarda todo en el teléfono y marca los registros como pendientes. Al rec
 
 ---
 
-## Catálogo de modelos
+## Catálogo de productos
 
-El selector es una cuadrícula de tarjetas con miniatura, agrupadas por categoría y con buscador. Las miniaturas se renderizaron desde la malla real de cada `.stl` dentro de los `.3mf` (proyección ortográfica por la cara plana, iluminación Lambert, z-buffer) y van embebidas como WebP sin pérdida de 200×200 px — 109 KB en total — para que el catálogo funcione sin conexión.
+El selector es una cuadrícula de tarjetas con imagen. Desde agosto de 2026 el catálogo son **productos completos** —una férula terminada, que puede constar de una o dos piezas— y no piezas sueltas como antes.
 
-| Categoría | Modelo en la app | Archivo `.stl` | Placa |
-|---|---|---|---|
-| Dedos | Fijación de dedo (V3) | `FIXACE PRSTU V3.stl` | Pequeña · Mediana |
-| Dedos | Fijación de dedo completo (V2) | `FIXACE CELEHO PRSTU V2.stl` | Pequeña · Mediana |
-| Dedos | Fijación pulgar–meñique (V3) | `FIXACE PALEC-MALIK V3.stl` | Pequeña · Mediana |
-| Mano | FTM Pequeña — Soporte metacarpo | `FTM PEQUEÑA - Soporte Metacarpo.stl` | Mediana |
-| Mano | FTM Mediana — Soporte metacarpo | `FTM MEDIANA - Soporte Metacarpo.stl` | Grande |
-| Mano | FTM Grande — Derecha | `FTM GRANDE.stl` | Grande |
-| Mano | FTM Grande — Izquierda | `FTM GRANDE IZQ(1).stl` | Grande |
-| Mano | FTM — 4.º y 5.º metacarpo | `FTM - Mano 4toy 5to metacarpo.stl` | Grande |
-| Mano | Férula Intrínseco Plus — Derecha | `Férula Intrinseco Plus - Derecho.stl` | Grande |
-| Mano | Férula Intrínseco Plus — Izquierda | `Férula Intrinseco Plus - Izquierdo.stl` | Grande |
-| Muñeca | Férula de muñeca panal (con logo) | `wristSplint-honeycomb-h2 logo` | Mediana |
-| Antebrazo | Antebrazo — Braquiopalmar mediana | `Antebrazo - Modelo Braquiopalmar Mediana.stl` | Mediana |
-| Antebrazo | Antebrazo infantil | `Ante Brazo Infantil.stl` | Mediana |
-| Codo | Codo — Braquiopalmar mediana | `Codo - Modelo Braquiopalmar Mediana.stl` | Grande |
-| Codo | Codo infantil | `Codo Infantil.stl` | Mediana |
-| Codo | Codo infantil — contextura delgada | `Codo Infantil - Contextura Delgada.stl` | Mediana |
-| Pie | Fijación de pie / dedo gordo (V2) | `FIXACE CHODIDLA - palec V2.stl` | Mediana |
+| Categoría | Producto | Archivo | Impresora | Piezas |
+|---|---|---|---|---|
+| Braquiopalmar | Braquiopalmar termoformada — Adulto | `Braquiopalmar-Adulto.3mf` | Grande | 2 (brazo + antebrazo) |
+| Braquiopalmar | Braquiopalmar termoformada — Infantil | `Braquiopalmar-Infantil.3mf` | Mediana | 2 |
+| Carpo-Palmar | Carpo-Palmar termoformada — Mediano | `Carpo-Palmar-Mediano.3mf` | Grande | 1 |
+| Carpo-Palmar | Carpo-Palmar termoformada — Pequeño | `Carpo-Palmar-Pequeno.3mf` | Mediana | 1 |
+| Dedo | Fijación de dedo | `Dedo.3mf` | Mediana y pequeña | 17 por juego de placas |
 
-Los nombres en checo (`FIXACE` = fijación, `PRSTU` = dedo, `PALEC` = pulgar, `MALIK` = meñique, `CHODIDLA` = pie) vienen del proyecto original.
+Las miniaturas de estos cinco son **fotos reales de las piezas impresas**, extraídas de los propios `.3mf` (`Auxiliaries/.thumbnails/`). La del dedo es el render de placa del archivo, teñido con el ámbar de la marca porque no traía foto.
 
-**Para agregar o cambiar modelos:** edita el array `MODELOS` en `index.html` — `{ n: "nombre visible", a: "archivo.stl", p: "placa" }` — y el array `CATALOGO` del Apps Script, para que el Resumen los recoja. Sin miniatura la tarjeta muestra 🩹 y todo lo demás funciona igual.
+### Archivo
+
+Los 17 modelos de la etapa anterior siguen en el catálogo, en una sección **🗄️ Archivo** al final. No estorban al elegir, pero permiten registrar impresiones pendientes y —lo importante— **los registros históricos siguen sumando en el Resumen**. Sus miniaturas se redujeron a 120 px para no cargar el archivo.
+
+### Para cambiar el catálogo
+
+Edita el array `MODELOS` en `index.html` — `{ n: "nombre visible", a: "archivo", p: "impresora y piezas" }` — y el array `CATALOGO` del Apps Script.
+
+> **Los nombres deben coincidir carácter por carácter entre los dos**, tildes y rayas incluidas: el Resumen los cruza con `SUMIF`, que compara texto exacto. `Adulto` y `— Adulto` con raya distinta son dos productos diferentes para la hoja.
+
+Las descargas se editan en el modal `id="m-files"` de `index.html`, y los `.3mf` viven en `makersporcolombia/archivos/`.
 
 ---
 

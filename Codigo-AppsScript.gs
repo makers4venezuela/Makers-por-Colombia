@@ -23,6 +23,8 @@ function setup() {
     .setFontWeight('bold').setFontColor('#ffffff').setBackground('#1f3864');
   sh.setFrozenRows(1);
   sh.getRange('A:A').setNumberFormat('yyyy-mm-dd');
+  sh.getRange('M:M').setNumberFormat('@');   // Destino siempre texto
+  sh.getRange('L:L').setNumberFormat('0');
   var anchos = [95,150,190,130,170,110,95,150,230,230,180,90,150,220,190,220];
   for (var i = 0; i < anchos.length; i++) sh.setColumnWidth(i + 1, anchos[i]);
   if (sh.getMaxColumns() > CABECERA.length)
@@ -37,25 +39,30 @@ function setup() {
 }
 
 var CATALOGO = [
-  ['Dedos', 'Fijación de dedo (V3)', 'FIXACE PRSTU V3.stl'],
-  ['Dedos', 'Fijación de dedo completo (V2)', 'FIXACE CELEHO PRSTU V2.stl'],
-  ['Dedos', 'Fijación pulgar–meñique (V3)', 'FIXACE PALEC-MALIK V3.stl'],
-  ['Mano y metacarpo', 'FTM Pequeña — Soporte metacarpo', 'FTM PEQUEÑA - Soporte Metacarpo.stl'],
-  ['Mano y metacarpo', 'FTM Mediana — Soporte metacarpo', 'FTM MEDIANA - Soporte Metacarpo.stl'],
-  ['Mano y metacarpo', 'FTM Grande — Derecha', 'FTM GRANDE.stl'],
-  ['Mano y metacarpo', 'FTM Grande — Izquierda', 'FTM GRANDE IZQ(1).stl'],
-  ['Mano y metacarpo', 'FTM — 4.º y 5.º metacarpo', 'FTM - Mano 4toy 5to metacarpo.stl'],
-  ['Mano y metacarpo', 'Férula Intrínseco Plus — Derecha', 'Férula Intrinseco Plus - Derecho.stl'],
-  ['Mano y metacarpo', 'Férula Intrínseco Plus — Izquierda', 'Férula Intrinseco Plus - Izquierdo.stl'],
-  ['Muñeca', 'Férula de muñeca panal (con logo)', 'wristSplint-honeycomb-h2 logo'],
-  ['Antebrazo y codo', 'Antebrazo — Braquiopalmar mediana', 'Antebrazo - Modelo Braquiopalmar Mediana.stl'],
-  ['Antebrazo y codo', 'Antebrazo infantil', 'Ante Brazo Infantil.stl'],
-  ['Antebrazo y codo', 'Codo — Braquiopalmar mediana', 'Codo - Modelo Braquiopalmar Mediana.stl'],
-  ['Antebrazo y codo', 'Codo infantil', 'Codo Infantil.stl'],
-  ['Antebrazo y codo', 'Codo infantil — contextura delgada', 'Codo Infantil - Contextura Delgada.stl'],
-  ['Pie', 'Fijación de pie / dedo gordo (V2)', 'FIXACE CHODIDLA - palec V2.stl']
+  ['Braquiopalmar', 'Braquiopalmar termoformada — Adulto', 'Braquiopalmar-Adulto.3mf'],
+  ['Braquiopalmar', 'Braquiopalmar termoformada — Infantil', 'Braquiopalmar-Infantil.3mf'],
+  ['Carpo-Palmar', 'Carpo-Palmar termoformada — Mediano', 'Carpo-Palmar-Mediano.3mf'],
+  ['Carpo-Palmar', 'Carpo-Palmar termoformada — Pequeño', 'Carpo-Palmar-Pequeno.3mf'],
+  ['Dedo', 'Fijación de dedo', 'Dedo.3mf'],
+  ['Archivo', 'Fijación de dedo (V3)', 'FIXACE PRSTU V3.stl'],
+  ['Archivo', 'Fijación de dedo completo (V2)', 'FIXACE CELEHO PRSTU V2.stl'],
+  ['Archivo', 'Fijación pulgar–meñique (V3)', 'FIXACE PALEC-MALIK V3.stl'],
+  ['Archivo', 'FTM Pequeña — Soporte metacarpo', 'FTM PEQUEÑA - Soporte Metacarpo.stl'],
+  ['Archivo', 'FTM Mediana — Soporte metacarpo', 'FTM MEDIANA - Soporte Metacarpo.stl'],
+  ['Archivo', 'FTM Grande — Derecha', 'FTM GRANDE.stl'],
+  ['Archivo', 'FTM Grande — Izquierda', 'FTM GRANDE IZQ(1).stl'],
+  ['Archivo', 'FTM — 4.º y 5.º metacarpo', 'FTM - Mano 4toy 5to metacarpo.stl'],
+  ['Archivo', 'Férula Intrínseco Plus — Derecha', 'Férula Intrinseco Plus - Derecho.stl'],
+  ['Archivo', 'Férula Intrínseco Plus — Izquierda', 'Férula Intrinseco Plus - Izquierdo.stl'],
+  ['Archivo', 'Férula de muñeca panal (con logo)', 'wristSplint-honeycomb-h2 logo'],
+  ['Archivo', 'Antebrazo — Braquiopalmar mediana', 'Antebrazo - Modelo Braquiopalmar Mediana.stl'],
+  ['Archivo', 'Antebrazo infantil', 'Ante Brazo Infantil.stl'],
+  ['Archivo', 'Codo — Braquiopalmar mediana', 'Codo - Modelo Braquiopalmar Mediana.stl'],
+  ['Archivo', 'Codo infantil', 'Codo Infantil.stl'],
+  ['Archivo', 'Codo infantil — contextura delgada', 'Codo Infantil - Contextura Delgada.stl'],
+  ['Archivo', 'Fijación de pie / dedo gordo (V2)', 'FIXACE CHODIDLA - palec V2.stl']
 ];
-var CATEGORIAS = ['Dedos', 'Mano y metacarpo', 'Muñeca', 'Antebrazo y codo', 'Pie', 'Otro'];
+var CATEGORIAS = ['Braquiopalmar', 'Carpo-Palmar', 'Dedo', 'Archivo', 'Otro'];
 
 function setupResumen_() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -79,7 +86,8 @@ function setupResumen_() {
     '=IFERROR(SUMPRODUCT((Registro!M2:M5000<>"")/COUNTIF(Registro!M2:M5000,Registro!M2:M5000&"")),0)',
     '=IFERROR(SUMPRODUCT((Registro!I2:I5000<>"")/COUNTIF(Registro!I2:I5000,Registro!I2:I5000&"")),0)'
   ]]).setFontSize(16).setFontWeight('bold').setFontColor('#1f3864')
-    .setBackground('#fff2cc').setHorizontalAlignment('center');
+    .setBackground('#fff2cc').setHorizontalAlignment('center')
+    .setNumberFormat('0');   // sin esto hereda el % del Resumen anterior
 
   sh.getRange('A7').setValue('Por categoria').setFontWeight('bold').setFontColor('#1f3864');
   sh.getRange(8, 1, 1, 2).setValues([['Categoria','Fabricadas']])
@@ -99,13 +107,13 @@ function setupResumen_() {
     .setFontWeight('bold').setFontColor('#1f3864');
   sh.getRange(9, 4).setFormula(
     '=IFERROR(QUERY(Registro!L2:M, "select Col2, sum(Col1) ' +
-    'where Col2 is not null and Col2 <> \'\' group by Col2 ' +
+    'where Col2 is not null group by Col2 ' +
     'order by sum(Col1) desc label Col2 \'Destino\', sum(Col1) \'Fabricadas\'"), ' +
     '"Sin destinos registrados")');
   sh.getRange(9, 4, 1, 2).setFontWeight('bold').setFontColor('#ffffff').setBackground('#1f3864');
 
   var ini = tot + 2;
-  sh.getRange(ini, 1).setValue('Por modelo del catalogo')
+  sh.getRange(ini, 1).setValue('Por producto')
     .setFontWeight('bold').setFontColor('#1f3864');
   sh.getRange(ini + 1, 1, 1, 4)
     .setValues([['Categoria','Modelo','Archivo .stl','Fabricadas']])

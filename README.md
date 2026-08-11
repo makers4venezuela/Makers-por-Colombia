@@ -2,7 +2,7 @@
 
 App móvil para que la comunidad maker colombiana registre la producción y entrega de **férulas médicas impresas en 3D**.
 
-Publicada en <https://makers4venezuela.github.io/Makers-por-Colombia/>
+Publicada en <https://kafetin.co/makersporcolombia/>
 
 Un voluntario abre la app en el celular, se identifica una vez, elige el modelo en un catálogo visual, toma la foto de la pieza y registra cuántas fabricó y cuántas entregó. Los datos van a una hoja de Google Sheets y las fotos a Google Drive; los totales de toda la red se consolidan solos.
 
@@ -12,7 +12,7 @@ Un voluntario abre la app en el celular, se identifica una vez, elige el modelo 
 
 ## Cómo está hecho
 
-Un solo archivo: `index.html`. Sin build, sin dependencias, sin CDN, sin framework. Se sirve como archivo estático desde GitHub Pages.
+Un solo archivo: `index.html`. Sin build, sin dependencias, sin CDN, sin framework. Se sirve como archivo estático desde GitHub Pages, dentro del sitio de kafetin.co.
 
 | | |
 |---|---|
@@ -26,8 +26,9 @@ Un solo archivo: `index.html`. Sin build, sin dependencias, sin CDN, sin framewo
 ## Funciones
 
 - **Identificación del voluntario** — país, nombre, taller, ciudad y correo obligatorios, con autorización de tratamiento de datos (Ley 1581 de 2012)
-- **Catálogo visual** — 17 modelos con miniatura, agrupados por categoría y con buscador
+- **Catálogo visual** — 5 productos con foto real de la pieza impresa, más el archivo de la etapa anterior
 - **Catálogo de la comunidad** — los modelos que un taller registra a mano aparecen para todos con su propia foto, con deduplicación por nombre normalizado
+- **Descarga de los `.3mf`** — accesible sin registrarse: llegas, imprimes, y solo después registras
 - **Registro por lotes con destino** — «20 unidades para Armenia», con sugerencias de destinos ya usados
 - **Foto solo para modelos nuevos** — se comprime a 640 px en el teléfono y sube a Drive
 - **Panel de totales** — KPIs y ranking por destino, por modelo y por taller, con filtros por periodo y país
@@ -42,7 +43,7 @@ index.html                        la app completa
 Codigo-AppsScript.gs              el backend, para pegar en Apps Script
 .nojekyll                         para GitHub Pages
 docs/DESPLIEGUE.md                guía de puesta en marcha
-docs/GITHUB.md                    publicación con GitHub Desktop y Pages
+docs/GITHUB.md                    cómo y dónde se publica
 docs/catalogo-miniaturas.png      las 17 miniaturas del catálogo
 docs/Makers-por-Colombia-datos.xlsx   respaldo del esquema de datos
 ```
@@ -52,7 +53,7 @@ docs/Makers-por-Colombia-datos.xlsx   respaldo del esquema de datos
 1. En la hoja de Google: **Extensiones → Apps Script**, pega el código (está en la app, ⚙️ → *Copiar código*) y ejecuta la función `setup`
 2. **Implementar → Aplicación web** · Ejecutar como *Yo* · Acceso *Cualquier persona*. Copia la URL `/exec`
 3. Pégala en `index.html`, en la constante `SHEET_URL`
-4. Publica el repo con GitHub Desktop y activa **Settings → Pages → main / (root)**
+4. Copia `index.html` a `kafetin-web/makersporcolombia/` y haz push desde GitHub Desktop
 
 `setup` crea solo la pestaña `Registro` con sus 16 columnas, la pestaña `Resumen` con las fórmulas y la carpeta de Drive para las fotos.
 
@@ -75,7 +76,7 @@ En la pantalla de entrada conviven el logo de KAFETIN y la bandera de Colombia, 
 
 ## Sobre las miniaturas
 
-No son fotos ni capturas de pantalla. Se renderizaron desde la malla real de cada `.stl` dentro de los proyectos `.3mf` de Bambu Studio: proyección ortográfica por la cara plana de cada pieza, iluminación Lambert y z-buffer. Van embebidas en el HTML como WebP sin pérdida de 200×200 px (109 KB en total) para que el catálogo también funcione sin conexión.
+Las de los 5 productos actuales son fotos reales de las piezas impresas, extraídas de los propios `.3mf`. Las del archivo se renderizaron desde la malla de cada `.stl`: proyección ortográfica por la cara plana, iluminación Lambert y z-buffer. Todas van embebidas como WebP (98 KB en total) para que el catálogo funcione sin conexión.
 
 ## Datos personales
 
