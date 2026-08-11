@@ -1,0 +1,33 @@
+# Sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editores y herramientas
+.vscode/
+.idea/
+.claude/
+*.swp
+*~
+
+# Netlify
+.netlify/
+
+# Temporales
+*.tmp
+*.log
+*.bak
+~$*.xlsx
+.~lock.*#
+
+# Copias sueltas en la raíz: la versión buena de cada uno vive en docs/
+/DESPLIEGUE.md
+/catalogo-miniaturas.png
+/Makers-por-Colombia-datos.xlsx
+/_montage.png
+
+# Datos reales de voluntarios — NUNCA subir al repositorio.
+# La plantilla vacía vive en docs/ ; los exports con datos, no.
+*-export-*.csv
+makers-por-colombia-*.csv
+datos-reales/
