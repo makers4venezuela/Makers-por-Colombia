@@ -9,6 +9,10 @@
  */
 var HOJA     = 'Registro';
 var CARPETA  = 'Makers por Colombia - Fotos';
+var HOJA_PED = 'Pedidos';
+var CAB_PED  = ['Fecha','Estado','Institucion','Tipo','Contacto','Telefono','Correo',
+                'Departamento','Ciudad','Direccion','Horario de recepcion',
+                'Que se necesita','Cantidad','Para cuando','Notas','Consentimiento'];
 var CABECERA = ['Fecha','Voluntario','Correo','Telefono','Taller','Ciudad','Pais',
                 'Categoria','Modelo','Archivo','Variante','Fabricadas','Destino',
                 'Notas','Consentimiento','Foto'];
@@ -31,6 +35,7 @@ function setup() {
     sh.deleteColumns(CABECERA.length + 1, sh.getMaxColumns() - CABECERA.length);
   try { if (!sh.getFilter()) sh.getRange(1, 1, sh.getMaxRows(), CABECERA.length).createFilter(); } catch (e) {}
 
+  setupPedidos_();
   setupResumen_();
   var f = carpeta_();
   SpreadsheetApp.getActiveSpreadsheet().toast(
@@ -40,6 +45,9 @@ function setup() {
 
 var CATALOGO = [
   ['Ganchos', 'Gancho para botellas', 'Gancho-Botella.3mf'],
+  ['Hospitalario', 'Tope de paral de suero', 'Paral-Suero.3mf'],
+  ['Protección personal', 'Soporte para tapabocas', 'Soporte-Tapabocas.3mf'],
+  ['Mascotas', 'Láminas para férulas', 'Laminas-Ferulas.3mf'],
   ['Braquiopalmar', 'Braquiopalmar termoformada — Adulto', 'Braquiopalmar-Adulto.3mf'],
   ['Braquiopalmar', 'Braquiopalmar termoformada — Infantil', 'Braquiopalmar-Infantil.3mf'],
   ['Carpo-Palmar', 'Carpo-Palmar termoformada — Mediano', 'Carpo-Palmar-Mediano.3mf'],
@@ -63,7 +71,7 @@ var CATALOGO = [
   ['Archivo', 'Codo infantil — contextura delgada', 'Codo Infantil - Contextura Delgada.stl'],
   ['Archivo', 'Fijación de pie / dedo gordo (V2)', 'FIXACE CHODIDLA - palec V2.stl']
 ];
-var CATEGORIAS = ['Ganchos', 'Braquiopalmar', 'Carpo-Palmar', 'Dedo', 'Archivo', 'Otro'];
+var CATEGORIAS = ['Ganchos', 'Hospitalario', 'Protección personal', 'Mascotas', 'Braquiopalmar', 'Carpo-Palmar', 'Dedo', 'Archivo', 'Otro'];
 
 function setupResumen_() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -181,12 +189,47 @@ function guardarFoto_(dataUrl, r) {
   } catch (err) { return ''; }
 }
 
+function setupPedidos_() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sh = ss.getSheetByName(HOJA_PED) || ss.insertSheet(HOJA_PED);
+  sh.getRange(1, 1, 1, CAB_PED.length)
+    .setValues([CAB_PED])
+    .setFontWeight('bold').setFontColor('#ffffff').setBackground('#a42b2b');
+  sh.setFrozenRows(1);
+  sh.getRange('A:A').setNumberFormat('yyyy-mm-dd hh:mm');
+  var anchos = [140,110,200,130,160,130,200,140,130,280,180,240,90,140,260,190];
+  for (var i = 0; i < anchos.length; i++) sh.setColumnWidth(i + 1, anchos[i]);
+  // La coordinacion trabaja sobre la columna Estado
+  var v = SpreadsheetApp.newDataValidation()
+    .requireValueInList(['Pendiente','En gestion','Asignado','Entregado','Descartado'], true)
+    .setAllowInvalid(true).build();
+  sh.getRange(2, 2, Math.max(sh.getMaxRows() - 1, 1), 1).setDataValidation(v);
+  try { if (!sh.getFilter()) sh.getRange(1, 1, sh.getMaxRows(), CAB_PED.length).createFilter(); } catch (e) {}
+}
+
+function hojaPed_() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sh = ss.getSheetByName(HOJA_PED);
+  if (!sh) { setupPedidos_(); sh = ss.getSheetByName(HOJA_PED); }
+  return sh;
+}
+
+function guardarPedido_(r) {
+  var sh = hojaPed_();
+  sh.appendRow([new Date(), 'Pendiente', r.institucion, r.tipo, r.contacto, r.telefono,
+                r.correo, r.departamento, r.ciudad, r.direccion, r.horario,
+                r.necesita, r.cantidad, r.cuando, r.notas, r.consentimiento]);
+  return { ok: true, tipo: 'pedido' };
+}
+
 function doPost(e) {
   var lock = LockService.getScriptLock();
   try { lock.waitLock(30000); } catch (err) { return json_({ ok: false, error: 'ocupado' }); }
   try {
+    var d = JSON.parse(e.postData.contents);
+    // Un pedido llega solo y marcado; la produccion llega en lotes.
+    if (!Array.isArray(d) && d.tipo_envio === 'pedido') return json_(guardarPedido_(d));
     var sh = hoja_();
-    var d  = JSON.parse(e.postData.contents);
     var f  = Array.isArray(d) ? d : [d];
     var filas = [];
     for (var i = 0; i < f.length; i++) {
